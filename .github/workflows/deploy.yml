@@ -15,18 +15,22 @@ jobs:
 
       - name: Configure SSH for Dokku
         run: |
-          mkdir -p ~/.ssh
-          cp /home/sarina/.ssh/id_gh_runner ~/.ssh/id_gh_runner
-          chmod 600 ~/.ssh/id_gh_runner
+          chmod 600 /home/sarina/.ssh/id_gh_runner
 
-          cat >> ~/.ssh/config <<'SSH'
+          cat > /home/sarina/.ssh/config <<'SSH'
           Host dokku-local
             HostName localhost
             User dokku
-            IdentityFile ~/.ssh/id_gh_runner
+            IdentityFile /home/sarina/.ssh/id_gh_runner
             IdentitiesOnly yes
             StrictHostKeyChecking accept-new
           SSH
+
+          chmod 600 /home/sarina/.ssh/config
+
+      - name: Test Dokku connection
+        run: |
+          ssh dokku-local apps:list
 
       - name: Deploy application to Dokku
         run: |
